@@ -1,0 +1,116 @@
+Architecture and Design Rationale
+=================================
+
+This document describes why adsb-eval was designed the way it is.
+It focuses on decision-making rationale rather than implementation details.
+
+--------------------------------------------------------------------
+
+Background and Problem Definition
+---------------------------------
+
+Before this project, ADS-B reception tuning was primarily evaluated using
+instantaneous metrics such as stats.json from readsb.
+
+These snapshot-based values made it difficult to answer practical questions:
+- Whether a configuration change actually improved reception
+- Whether differences were caused by tuning or by temporal variation
+- Whether observed improvements were statistically meaningful
+
+As a result, tuning decisions often relied on intuition rather than evidence.
+
+The primary limitation was the lack of persistent, comparable data.
+
+--------------------------------------------------------------------
+
+Why JSONL Was Chosen
+-------------------
+
+JSONL was selected as the core logging format for several reasons.
+
+First, JSONL enables append-only logging, which is resilient to power loss,
+process termination, and partial writes. This property is important for
+long-running, unattended systems.
+
+Second, JSONL is well suited for post-hoc analysis. Each record is independent,
+which makes it easy to apply statistical methods, reprocess historical data,
+and introduce new evaluation criteria without changing the logging mechanism.
+
+Third, JSONL integrates naturally with cron and systemd-based execution models,
+which aligns with the operational environment of this project.
+
+--------------------------------------------------------------------
+
+Metric Selection and Statistical Perspective
+--------------------------------------------
+
+Average values alone are insufficient for evaluating ADS-B reception quality.
+They are sensitive to outliers and do not represent real-world operating limits.
+
+For this reason, adsb-eval emphasizes distribution-based metrics:
+
+- avg provides a general performance reference
+- percentile values (p50, p90, p95) represent practical operating boundaries
+- max indicates the physical or geometric limits of the system
+
+Percentile-based evaluation allows confidence-aware comparison between
+configurations. While this project does not enforce formal hypothesis testing,
+the design intentionally supports future use of statistical tests, confidence
+intervals, and distribution comparisons.
+
+The goal is not absolute precision, but reproducible and explainable judgment.
+
+--------------------------------------------------------------------
+
+Human-in-the-Loop Decision Making
+--------------------------------
+
+This project deliberately avoids automatic optimization or self-tuning.
+
+ADS-B reception environments vary significantly depending on geography,
+antenna placement, surrounding structures, and traffic patterns.
+Automated tuning risks optimizing for local noise or transient conditions.
+
+Instead, adsb-eval is designed to support human decision-making by providing
+transparent metrics and historical context.
+
+All evaluation logic remains visible and auditable.
+
+--------------------------------------------------------------------
+
+Design Philosophy
+-----------------
+
+The core design principles of this project are:
+
+- ADS-B reception tuning should be evaluated statistically, not intuitively
+- Logs should be preserved in a form that supports future verification
+- Evaluation criteria should remain explicit and interpretable
+- Failure modes should be predictable rather than hidden
+- The system should assist judgment, not replace it
+
+This project intentionally avoids embedding subjective conclusions or
+environment-specific assumptions that could mislead downstream users.
+
+--------------------------------------------------------------------
+
+Scope and Limitations
+--------------------
+
+adsb-eval is not intended to be a turnkey solution or an automated optimizer.
+
+It provides a framework for evaluation, not prescriptions.
+Users are expected to interpret results within their own operational context.
+
+No claims are made regarding universal optimal settings.
+
+--------------------------------------------------------------------
+
+Closing Notes
+-------------
+
+The primary objective of this project is to provide a reliable basis for
+evaluating ADS-B reception tuning decisions.
+
+By preserving data and exposing statistical structure, adsb-eval enables
+decisions to be made with evidence rather than intuition.
