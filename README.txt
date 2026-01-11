@@ -149,6 +149,12 @@ JSONL outputs can be consumed by external tools if desired.
 
 --------------------------------------------------------------------
 
+Sample JSONL files may contain only a few records.
+They are provided to illustrate output structure, not statistical significance.
+For design rationale and architectural decisions, see docs/architecture.txt.
+
+--------------------------------------------------------------------
+
 License
 -------
 
