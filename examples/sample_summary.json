@@ -1,0 +1,56 @@
+{
+  "ts": 1768091288.149051,
+  "status": "ok",
+  "latest": {
+    "ts": 1768091288.033688,
+    "src": "dist_1m",
+    "site": {
+      "id": "unknown"
+    },
+    "filters": {
+      "max_seen_pos_s": 30.0,
+      "min_samples_for_stats": 5
+    },
+    "setup": {
+      "schema_ver": 3,
+      "antenna_id": "unknown",
+      "lna": "unknown",
+      "gain_db": null,
+      "dongle": "unknown"
+    },
+    "quality": {
+      "rank": "A",
+      "n_used": 34
+    },
+    "n_total": 40,
+    "n_with_pos": 37,
+    "n_seen_pos_ok": 37,
+    "n_fresh": 34,
+    "n_used": 34,
+    "km": {
+      "n": 34,
+      "avg": 99.678,
+      "p50": 94.514,
+      "p75": 137.484,
+      "p90": 176.613,
+      "p95": 201.247,
+      "max": 209.606
+    }
+  },
+  "rolling": {
+    "n": 2,
+    "km_avg": 103.913,
+    "km_p50": 96.668,
+    "km_p90": 183.37900000000002,
+    "km_p95": 207.33300000000003,
+    "km_max": 237.4535,
+    "n_used": 35.5,
+    "n_total": 41.0,
+    "n_with_pos": 38.0
+  },
+  "pos_rate_latest": 0.925,
+  "source": {
+    "lines": 60,
+    "dist_jsonl": "masked"
+  }
+}

@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+venv/
+
+# OS/editor
+.DS_Store
+*.swp
+*.swo
+
+# Logs / outputs (DO NOT COMMIT)
+data/
+*.jsonl
+*.json
+*.log
+
+# But allow examples
+!examples/
+!examples/*.json
+!examples/*.jsonl
+
+# Secrets / env
+.env
+.env.*
+*.secret
+*.key

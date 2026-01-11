@@ -1,0 +1,5 @@
+{"ts":1768092361.7717762,"src":"dist_pos_health","status":"ok","input":{"dist_jsonl":"masked"},"latest":{"n_total":40,"n_with_pos":37,"pos_rate":0.925,"km":{"avg":99.678,"p50":94.514,"p90":176.613,"p95":201.247,"max":209.606,"n":34}}}
+{"ts":1768092422.0247848,"src":"dist_pos_health","status":"ok","input":{"dist_jsonl":"masked"},"latest":{"n_total":40,"n_with_pos":37,"pos_rate":0.925,"km":{"avg":99.678,"p50":94.514,"p90":176.613,"p95":201.247,"max":209.606,"n":34}}}
+{"ts":1768092481.2716513,"src":"dist_pos_health","status":"ok","input":{"dist_jsonl":"masked"},"latest":{"n_total":40,"n_with_pos":37,"pos_rate":0.925,"km":{"avg":99.678,"p50":94.514,"p90":176.613,"p95":201.247,"max":209.606,"n":34}}}
+{"ts":1768092541.5056183,"src":"dist_pos_health","status":"ok","input":{"dist_jsonl":"masked"},"latest":{"n_total":40,"n_with_pos":37,"pos_rate":0.925,"km":{"avg":99.678,"p50":94.514,"p90":176.613,"p95":201.247,"max":209.606,"n":34}}}
+{"ts":1768092601.7443857,"src":"dist_pos_health","status":"ok","input":{"dist_jsonl":"masked"},"latest":{"n_total":40,"n_with_pos":37,"pos_rate":0.925,"km":{"avg":99.678,"p50":94.514,"p90":176.613,"p95":201.247,"max":209.606,"n":34}}}
