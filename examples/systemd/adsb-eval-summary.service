@@ -1,0 +1,22 @@
+[Unit]
+Description=adsb-eval summary.json generator (atomic write)
+After=adsb-eval-dist.service
+
+[Service]
+Type=oneshot
+User=yuki
+Group=yuki
+
+EnvironmentFile=-/etc/default/adsb-eval
+WorkingDirectory=/home/yuki/publish/adsb-eval
+
+# make_summary 側は lock を持たないので systemd 側で保険
+ExecStart=/usr/bin/flock -n %h/.cache/adsb-eval/adsb-summary.flock /usr/bin/python3 -u src/make_summary.py
+
+NoNewPrivileges=true
+PrivateTmp=true
+UMask=0077
+ReadWritePaths=/home/yuki/publish/adsb-eval/data
+
+[Install]
+WantedBy=multi-user.target

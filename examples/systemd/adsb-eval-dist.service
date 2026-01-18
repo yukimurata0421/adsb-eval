@@ -1,0 +1,33 @@
+[Unit]
+Description=adsb-eval dist_1m JSONL logger (append-only)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+
+# Adjust user/group if you install as root service
+User=yuki
+Group=yuki
+
+EnvironmentFile=-/etc/default/adsb-eval
+WorkingDirectory=%E/ADSB_BASE_DIR
+# ↑ ここは systemd が環境変数展開しない環境があるので、実運用では
+# WorkingDirectory=/home/yuki/publish/adsb-eval のように固定推奨（examplesなのでコメントで誘導）
+
+# Safer: venv があるなら python3 を差し替え
+ExecStart=/usr/bin/python3 -u src/adsb_dist_logger.py
+
+# systemd 側でも二重起動を抑止（Python 内 lock + systemd 側で保険）
+ExecStart=/usr/bin/flock -n %h/.cache/adsb-eval/adsb-dist.flock /usr/bin/python3 -u src/adsb_dist_logger.py
+
+# Hardening (最低限)
+NoNewPrivileges=true
+PrivateTmp=true
+UMask=0077
+
+# Writes are only under data/
+ReadWritePaths=/home/yuki/publish/adsb-eval/data
+
+[Install]
+WantedBy=multi-user.target
