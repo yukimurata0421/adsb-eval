@@ -14,8 +14,9 @@ that produces runtime data (e.g., `readsb`).
 2. Configure input paths and receiver parameters in scripts under `src/`.
 3. Run the logger / evaluator scripts directly.
 
-Detailed usage notes and examples are documented in `docs/`.
-Start there if you want to understand the execution flow before modifying anything.
+For a minimal example using test fixtures, see [QUICKSTART.md](QUICKSTART.md).  
+Detailed design notes are documented in `docs/`.
+
 
 ---
 
@@ -175,8 +176,15 @@ This project is intended for:
 - Engineers interested in reproducible evaluation systems
 - Anyone designing systems where **judgment must remain human**
 
+## Documentation
+
+- Design background and evaluation philosophy: `docs/design.md`
+
 ---
 
+Current development is based on the v2 design.
+
+---
 ## License
 
 MIT License
