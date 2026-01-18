@@ -2,11 +2,32 @@ from __future__ import annotations
 
 import os
 import sys
-from typing import Optional
+from typing import Optional, Callable, TypeVar
+
+T = TypeVar("T")
 
 
 def warn(msg: str) -> None:
     print(f"[WARN] {msg}", file=sys.stderr)
+
+
+def _get_env(
+    name: str,
+    cast: Callable[[str], T],
+    default: Optional[T],
+    *,
+    allow_none: bool,
+) -> Optional[T]:
+    v = os.environ.get(name)
+
+    if v in (None, ""):
+        return None if allow_none else default
+
+    try:
+        return cast(v)
+    except Exception:
+        warn(f"{name} invalid ({v!r}), fallback={default}")
+        return None if allow_none else default
 
 
 def env_str(name: str, default: str) -> str:
@@ -15,90 +36,46 @@ def env_str(name: str, default: str) -> str:
 
 
 def env_int(name: str, default: str) -> int:
-    v = os.environ.get(name)
-    if v is None:
-        return int(default)
-    try:
-        return int(v)
-    except Exception:
-        warn(f"{name} invalid ({v!r}), fallback={default}")
-        return int(default)
+    return int(
+        _get_env(
+            name,
+            int,
+            int(default),
+            allow_none=False,
+        )
+    )
 
 
 def env_float(name: str, default: str) -> float:
-    """
-    互換維持：
-    - default は str 前提（従来通り）
-    - env未設定なら float(default)
-    - env不正なら warnして float(default)
-    """
-    v = os.environ.get(name)
-    if v is None:
-        return float(default)
-    try:
-        return float(v)
-    except Exception:
-        warn(f"{name} invalid ({v!r}), fallback={default}")
-        return float(default)
+    return float(
+        _get_env(
+            name,
+            float,
+            float(default),
+            allow_none=False,
+        )
+    )
 
 
-def env_float_opt(name: str, default: Optional[str] = None) -> Optional[float]:
-    """
-    None許容の Optional float getter（追加・互換非破壊）
+def env_int_opt(name: str) -> Optional[int]:
+    return _get_env(
+        name,
+        int,
+        None,
+        allow_none=True,
+    )
 
-    - env未設定/空文字:
-        default が None -> None を返す
-        default が str -> float(default) を返す
-    - envが不正:
-        warnして default にフォールバック（defaultがNoneならNone）
-    - envが正常:
-        float(env) を返す
-    """
-    v = os.environ.get(name)
 
-    # 未設定 or 空文字は「未指定」として扱う
-    if v is None or v.strip() == "":
-        if default is None:
-            return None
-        return float(default)
-
-    try:
-        return float(v)
-    except Exception:
-        warn(f"{name} invalid ({v!r}), fallback={default!r}")
-        if default is None:
-            return None
-        return float(default)
+def env_float_opt(name: str) -> Optional[float]:
+    return _get_env(
+        name,
+        float,
+        None,
+        allow_none=True,
+    )
 
 
 def env_flag(name: str, default: str = "0") -> bool:
     v = os.environ.get(name, default)
     v = (v or "").strip().lower()
     return v in ("1", "true", "yes", "on")
-
-def env_float_opt(name: str, default: Optional[str] = None) -> Optional[float]:
-    """
-    None許容の Optional float getter（追加・互換非破壊）
-
-    - env未設定/空文字:
-        default が None -> None を返す
-        default が str -> float(default) を返す
-    - envが不正:
-        warnして default にフォールバック（defaultがNoneならNone）
-    - envが正常:
-        float(env) を返す
-    """
-    v = os.environ.get(name)
-
-    if v is None or v.strip() == "":
-        if default is None:
-            return None
-        return float(default)
-
-    try:
-        return float(v)
-    except Exception:
-        warn(f"{name} invalid ({v!r}), fallback={default!r}")
-        if default is None:
-            return None
-        return float(default)
