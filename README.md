@@ -104,6 +104,7 @@ more robust configuration decisions.
 
 ## Directory structure and responsibility
 
+```
 adsb-eval/
 ├── src/
 │   ├── lib/        # Internal modules (JSONL handling, locking, statistics)
@@ -114,6 +115,7 @@ adsb-eval/
 ├── examples/
 │   └── systemd/    # Example systemd service/timer units (reference only)
 └── docs/           # Design notes (optional)
+```
 
 **Notes:**
 - `src/lib/` is **not a public library**.  
