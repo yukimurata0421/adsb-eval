@@ -1,2 +1,1 @@
-# adsb-eval has no mandatory external Python dependencies.
-# Python 3.10+ stdlib only.
+requests>=2.28
