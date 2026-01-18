@@ -5,7 +5,7 @@ lib/fsutil.py
 Filesystem utilities used across adsb-eval.
 
 Design goals:
-- Small, dependency-free helpers
+- Small, stdlib-only helpers
 - Safe defaults (mkdir -p behavior)
 - Provide compatibility functions expected by other lib modules:
   - ensure_dir_for_file(path)
