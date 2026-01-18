@@ -5,17 +5,29 @@
 
 ---
 
+## Quick Start
+
+This project is intended to be used together with an existing ADS-B receiver
+that produces runtime data (e.g., `readsb`).
+
+1. Prepare an ADS-B receiver and ensure JSON runtime outputs are available.
+2. Configure input paths and receiver parameters in scripts under `src/`.
+3. Run the logger / evaluator scripts directly.
+
+Detailed usage notes and examples are documented in `docs/`.
+Start there if you want to understand the execution flow before modifying anything.
+
+---
+
 ## What this project is NOT
 
 This project is intentionally **not** designed to:
 
 - Automatically optimize receiver parameters
-- Judge performance based on instantaneous values or UI metrics
-- Depend on Web dashboards for execution or evaluation
-- Produce a single “best” configuration automatically
-
-All optimization decisions are **explicitly made by humans**,
-based on reproducible statistical evidence.
+- Judge performance using instantaneous values  
+  (e.g., single-point maximum distance or momentary aircraft count)
+- Treat dashboards, public rankings, or aggregator leaderboards
+  as ground truth
 
 ---
 
@@ -29,8 +41,8 @@ This system is built on the following principles:
   - All raw data is stored as append-only logs
   - Results can always be recalculated from original data
 - **Execution is Web-independent**
-  - `systemd` is the execution and supervision authority
-  - Web/UI is read-only and optional
+  - Execution and supervision are handled outside the Web layer
+  - Web/UI components, if any, are read-only and optional
 - **Statistics support decisions, not automation**
   - The system provides evidence
   - Humans make the final judgment
@@ -44,67 +56,66 @@ This system is built on the following principles:
 ADS-B reception quality cannot be reliably evaluated using
 instantaneous values such as:
 
-- maximum distance
+- maximum distance at a single moment
 - current aircraft count
-- UI-based rankings
+- UI-based or leaderboard-style rankings
 
-Instead, this project evaluates **state transitions over time**
-using statistically comparable units.
-
----
-
-## Evaluation model (overview)
-
-### Primary objective
-- **Maximize unique aircraft captured per day**
-  (`uniq ICAO / day`)
-
-### Secondary indicators
-- Position rate (data quality)
-- Distance distribution (e.g. p95)
-- Near-range degradation penalties
-
-### Evaluation unit
-- **Day-of-week × time-of-day blocks (2-hour blocks)**
-- One week = 84 independent comparison blocks
-
-This design minimizes bias caused by:
-- traffic diurnal cycles
-- curfews
-- day-of-week effects
-- seasonal variability
+Instead, this project focuses on **time-series behavior and state transitions**
+derived from append-only logs, so that reception performance can be
+re-evaluated, compared, and audited later.
 
 ---
 
-## Uncertainty handling (design note)
+## Current scope
 
-ADS-B reception performance is inherently non-deterministic due to:
-- weather conditions
-- traffic volume fluctuations
-- temporary interference
-- occasional low-traffic or no-flight days
+At the current stage, this project provides:
 
-At the current stage, this project focuses on
-deterministic, block-based comparisons using aggregated metrics.
+- Reliable, append-only logging of ADS-B–related metrics
+- A foundation for comparing reception performance across configurations
+  using reproducible data
+- A clear separation between data collection, evaluation logic, and presentation
 
-However, uncertainty-aware evaluation is considered an important
-future extension of this framework.
+Explicit scoring functions, block-based comparison models,
+and uncertainty-aware evaluation are **not yet implemented**
+and are treated as future extensions.
 
-### Planned direction (not yet implemented)
+---
 
-- Block-based resampling (e.g. bootstrap)
-- Confidence interval estimation for score distributions
-- Decision support using lower confidence bounds (LCB)
+## Results (observed)
 
-The intent is **not to automate optimization**, but to provide
-quantitative uncertainty information so that humans can make
-more robust configuration decisions.
+- The daily aircraft capture count increased by **more than 200%**
+  after hardware and configuration changes at the author’s station.
+
+**Note:**  
+This improvement is an observed result under a specific location and environment.
+One of the goals of this project is to make such improvements
+**measurable, explainable, and reproducible** using logged data,
+rather than relying on anecdotal or UI-based impressions.
+
+---
+
+## Roadmap (planned, not yet implemented)
+
+The following items represent planned directions, not current behavior:
+
+- Primary objective:
+  - Maximize unique aircraft captured per day (`uniq ICAO / day`)
+- Planned evaluation units:
+  - Day-of-week × time-of-day blocks (e.g., 2-hour blocks)
+  - One week = 84 comparison blocks
+- Planned uncertainty handling:
+  - Block-based resampling (e.g., bootstrap)
+  - Confidence interval estimation for score distributions
+  - Decision support using lower confidence bounds (LCB)
+
+These extensions are intended to **support human decision-making**,
+not to enable automatic optimization.
 
 ---
 
 ## Directory structure and responsibility
 
-```
+```text
 adsb-eval/
 ├── src/
 │   ├── lib/        # Internal modules (JSONL handling, locking, statistics)
@@ -118,13 +129,16 @@ adsb-eval/
 ```
 
 **Notes:**
-- `src/lib/` is **not a public library**.  
+
+- `src/lib/` is not a public library.  
   It contains internal building blocks shared by executables.
+
 - Example systemd unit files are provided for reference only.  
-  Actual execution and supervision must be adapted
-  to each environment’s operational requirements.
+  Actual execution and supervision must be adapted to each environment’s
+  operational requirements.
 
 **Execution, evaluation, storage, and presentation are strictly separated.**
+
 ---
 
 ## Data philosophy
@@ -143,11 +157,11 @@ This ensures:
 
 ## External references
 
-- ADS-B data is continuously fed to multiple public aggregators
+- ADS-B data is continuously fed to multiple public aggregators  
   (FlightRadar24 / PlaneFinder / ADSBexchange)  
   **for external consistency checks only**, not ranking or promotion.
 
-- Design background and decision rationale are documented
+- Design background and decision rationale are documented  
   in long-form articles (Qiita / Zenn).
 
 ---
