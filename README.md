@@ -1,13 +1,32 @@
-# adsb-eval
+#adsb-eval
+ADS-B reception evaluation using append-only JSONL logs
 
-ADS-B reception evaluation using append-only JSONL logs.
+Most ADS-B reception tuning relies on instantaneous snapshot metrics
+provided by decoders such as readsb.
 
-This project focuses on statistical evaluation of ADS-B reception tuning.
-Instead of relying on instantaneous snapshot metrics, it uses long-term
-distribution-based statistics such as avg, p95, and max distance.
+While useful for monitoring, snapshot-based metrics are unstable
+and unsuitable for objectively comparing changes such as:
 
-The goal is to support data-driven decisions when changing antennas,
-gain settings, or decoder parameters.
+・Antenna replacement
+・Gain adjustment
+・Decoder parameter tuning
 
-For full details, design rationale, and evaluation methodology,
+As a result, many tuning decisions are made based on intuition
+or isolated observations rather than reproducible evidence.
+
+adsb-eval addresses this limitation by treating ADS-B reception
+as a time-accumulated statistical problem.
+
+Reception data is persisted as append-only JSONL logs
+and evaluated using distribution-based metrics
+(avg, p95, max) instead of momentary values.
+
+The goal of this project is to support reproducible,
+data-driven tuning decisions for ADS-B receivers.
+
+This repository focuses on evaluation methodology and data integrity,
+not visualization or automation.
+
+For full design rationale, evaluation model,
+and real-world application results,
 see README.txt.
