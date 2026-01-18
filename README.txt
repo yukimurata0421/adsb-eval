@@ -256,3 +256,6 @@ The goal is evaluation, not automation.
 License
 
 MIT
+
+Optional environment variables may be omitted.
+In that case, corresponding fields are recorded as null.
