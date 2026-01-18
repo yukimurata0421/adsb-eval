@@ -13,7 +13,7 @@ Prerequisites
 -------------
 
 - Python 3.9 or later
-- No external Python dependencies (stdlib only)
+- Requires Python 3.10+ and requests (see requirements.txt)
 
 -------------------------------------------------------------------------------
 
