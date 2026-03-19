@@ -2,32 +2,24 @@
 Description=adsb-eval dist_1m JSONL logger (append-only)
 Wants=network-online.target
 After=network-online.target
+StartLimitIntervalSec=0
+OnFailure=adsb-eval-failure-notify@%n.service
 
 [Service]
 Type=oneshot
 
-# Adjust user/group if you install as root service
-User=yuki
-Group=yuki
-
 EnvironmentFile=-/etc/default/adsb-eval
-WorkingDirectory=%E/ADSB_BASE_DIR
-# ↑ ここは systemd が環境変数展開しない環境があるので、実運用では
-# WorkingDirectory=/home/yuki/publish/adsb-eval のように固定推奨（examplesなのでコメントで誘導）
 
-# Safer: venv があるなら python3 を差し替え
-ExecStart=/usr/bin/python3 -u src/adsb_dist_logger.py
+# 初回実行でも失敗しないように事前作成
+ExecStartPre=/usr/bin/bash -lc 'mkdir -p "${ADSB_LOG_DIR:-data/logs}" "${ADSB_STATE_DIR:-data/state}"'
 
-# systemd 側でも二重起動を抑止（Python 内 lock + systemd 側で保険）
-ExecStart=/usr/bin/flock -n %h/.cache/adsb-eval/adsb-dist.flock /usr/bin/python3 -u src/adsb_dist_logger.py
+# ADSB_BASE_DIR へ移動して実行。Python 側 lock に加え flock でも保険を掛ける。
+ExecStart=/usr/bin/bash -lc 'cd "${ADSB_BASE_DIR:?set ADSB_BASE_DIR}" && exec /usr/bin/flock -n "${ADSB_STATE_DIR:-data/state}/adsb-dist.flock" /usr/bin/python3 -u src/adsb_dist_logger.py'
 
 # Hardening (最低限)
 NoNewPrivileges=true
 PrivateTmp=true
 UMask=0077
-
-# Writes are only under data/
-ReadWritePaths=/home/yuki/publish/adsb-eval/data
 
 [Install]
 WantedBy=multi-user.target

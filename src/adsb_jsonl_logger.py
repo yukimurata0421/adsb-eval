@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import time
+from pathlib import Path
 from typing import Any, Dict
 
 from lib.env import env_flag, env_str
@@ -32,7 +33,8 @@ def main() -> int:
 
     readsb_stats = env_str("READSB_STATS_JSON", "/run/readsb/stats.json")
 
-    base_dir = env_str("ADSB_BASE_DIR", "/home/yuki/publish/adsb-eval")
+    script_dir = Path(__file__).resolve().parent
+    base_dir = env_str("ADSB_BASE_DIR", str(script_dir.parent))
     log_dir = env_str("ADSB_LOG_DIR", f"{base_dir}/data/logs")
     out_path = env_str("ADSB_STATS_JSONL", f"{log_dir}/stats_history.jsonl")
 

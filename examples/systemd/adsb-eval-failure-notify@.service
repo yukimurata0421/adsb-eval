@@ -1,0 +1,13 @@
+[Unit]
+Description=adsb-eval failure notify: %i
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/default/adsb-eval
+EnvironmentFile=-/etc/default/adsb-eval-notify
+Environment="LINES=40"
+Environment="MAX_CHARS=1800"
+
+ExecStart=/usr/bin/bash -lc 'cd "${ADSB_BASE_DIR:?set ADSB_BASE_DIR}" && exec /usr/bin/python3 -u src/systemd_failure_notify.py %i'

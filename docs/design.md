@@ -109,3 +109,6 @@ This project intentionally avoids coupling
 to specific databases, dashboards, or visualization tools.
 
 JSONL outputs may be consumed by external systems if desired.
+
+Note: This result reflects a specific location and environment
+and is presented to illustrate methodology, not to claim universality.

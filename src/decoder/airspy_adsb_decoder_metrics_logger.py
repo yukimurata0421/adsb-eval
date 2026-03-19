@@ -20,9 +20,10 @@ Features:
 Env:
 - ADSB_AIRSPY_STATS_JSON (default: /run/airspy_adsb/stats.json)
 - ADSB_AIRSPY_LOGFILE (default: "")
-- ADSB_MONITOR_DIR (default: /home/yuki/projects/adsb_monitor)
-- ADSB_LOG_DIR (default: $ADSB_MONITOR_DIR/data/logs)
-- ADSB_STATE_DIR (default: $ADSB_MONITOR_DIR/data/state)
+- ADSB_BASE_DIR (default: inferred from script path)
+- ADSB_MONITOR_DIR (legacy alias for ADSB_BASE_DIR)
+- ADSB_LOG_DIR (default: $ADSB_BASE_DIR/data/logs)
+- ADSB_STATE_DIR (default: $ADSB_BASE_DIR/data/state)
 - ADSB_STATS_FILENAME (default: adsb_airspy_decoder_metrics_1m.jsonl)
 - ADSB_PUBLIC_MODE (default: 1)
 - ADSB_SCHEMA_VER (default: 1)
@@ -40,6 +41,7 @@ import re
 import sys
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 
@@ -72,7 +74,9 @@ def env_flag(name: str, default: str = "0") -> bool:
 # =====================
 PUBLIC_MODE = env_flag("ADSB_PUBLIC_MODE", "1")
 
-BASE_DIR = env_str("ADSB_MONITOR_DIR", "/home/yuki/projects/adsb_monitor")
+SCRIPT_DIR = Path(__file__).resolve().parent
+DEFAULT_BASE_DIR = str(SCRIPT_DIR.parent.parent)
+BASE_DIR = env_str("ADSB_BASE_DIR", env_str("ADSB_MONITOR_DIR", DEFAULT_BASE_DIR))
 LOG_DIR = env_str("ADSB_LOG_DIR", os.path.join(BASE_DIR, "data", "logs"))
 STATE_DIR = env_str("ADSB_STATE_DIR", os.path.join(BASE_DIR, "data", "state"))
 

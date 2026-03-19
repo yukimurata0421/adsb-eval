@@ -16,7 +16,9 @@ Env:
 - ADSB_CONFIG_ID: config identifier tag (optional, recommended)
 - ADSB_PUBLIC_MODE: hide coordinates/paths in output (default: 1)
 - READSB_AIRCRAFT_JSON: aircraft.json path (default: /run/readsb/aircraft.json)
-- ADSB_LOG_DIR: output directory (default: $ADSB_MONITOR_DIR/data/logs)
+- ADSB_BASE_DIR: repository base directory (default: inferred from script path)
+- ADSB_MONITOR_DIR: legacy alias for ADSB_BASE_DIR
+- ADSB_LOG_DIR: output directory (default: $ADSB_BASE_DIR/data/logs)
 - ADSB_DIST_SIGNAL_JSONL: output JSONL path (default: $ADSB_LOG_DIR/dist_signal_stats_1m.jsonl)
 - ADSB_SCHEMA_VER: schema version (default: 1)
 - ADSB_MAX_SEEN_POS_SEC: exclude stale positions (seconds); unset/empty to disable
@@ -99,7 +101,9 @@ CONFIG_ID = env_str("ADSB_CONFIG_ID", "")
 
 AIRCRAFT_JSON = env_str("READSB_AIRCRAFT_JSON", "/run/readsb/aircraft.json")
 
-BASE_DIR = env_str("ADSB_MONITOR_DIR", "/home/yuki/projects/adsb_monitor")
+SCRIPT_DIR = Path(__file__).resolve().parent
+DEFAULT_BASE_DIR = str(SCRIPT_DIR.parent.parent)
+BASE_DIR = env_str("ADSB_BASE_DIR", env_str("ADSB_MONITOR_DIR", DEFAULT_BASE_DIR))
 LOG_DIR = env_str("ADSB_LOG_DIR", os.path.join(BASE_DIR, "data", "logs"))
 LOG_FILE = env_str("ADSB_DIST_SIGNAL_JSONL", os.path.join(LOG_DIR, "dist_signal_stats_1m.jsonl"))
 

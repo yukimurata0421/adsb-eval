@@ -17,7 +17,6 @@ that produces runtime data (e.g., `readsb`).
 For a minimal example using test fixtures, see [QUICKSTART.md](QUICKSTART.md).  
 Detailed design notes are documented in `docs/`.
 
-
 ---
 
 ## What this project is NOT
